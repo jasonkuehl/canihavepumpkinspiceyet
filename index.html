@@ -1,0 +1,47 @@
+<html>
+<head>
+  <title>Can I have pumpkin spice yet?</title>
+  <style>
+    #answer {
+      font-family: sans;
+      font-size: 100pt;
+      font-weight: bold;
+      left: 50%;
+      position: absolute;
+      text-align: center;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body>
+  <div id="answer"></div>
+  <script>
+    var answer = "Fuck it, Its 2020, Go Nuts.";
+    var today = new Date();
+    var nowYouCanHaveIt = new Date("9/22/" + today.getFullYear());
+    var nowItsTooLate = new Date("11/01/" + today.getFullYear());
+    var time = today.getHours()
+    if(nowYouCanHaveIt < today && nowItsTooLate > today) {
+      answer = "YES";
+      after_hours = ", beer included!!"
+      if(time > 10 && time < 17) {
+        answer = answer.concat(after_hours)
+      }
+      document.body.style.background = '#d15f09';
+    }
+    var elem = document.getElementById('answer');
+    elem.innerHTML = answer;
+  </script>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7DF55LQNEH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-7DF55LQNEH');
+  </script>
+
+</body>

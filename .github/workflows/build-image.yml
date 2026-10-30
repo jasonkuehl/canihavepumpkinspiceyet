@@ -67,3 +67,20 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=${{ env.IMAGE }}:buildcache
           cache-to: ${{ github.event_name != 'pull_request' && format('type=registry,ref={0}:buildcache,mode=max', env.IMAGE) || '' }}
+
+      # Gitea doesn't link container images to their repository by itself, so link this one and it
+      # shows under the repo's Packages tab. 201 = linked now, 400 = already linked (both fine).
+      - name: Link image to this repository
+        if: github.event_name != 'pull_request'
+        env:
+          TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+        run: |
+          name="$(echo "${GITHUB_REPOSITORY#*/}" | tr '[:upper:]' '[:lower:]')"
+          repo="${GITHUB_REPOSITORY#*/}"
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H "Authorization: token $TOKEN" \
+            "${{ github.api_url }}/packages/${{ github.repository_owner }}/container/$name/-/link/$repo")
+          case "$code" in
+            201) echo "Linked $name to $repo" ;;
+            400) echo "$name is already linked" ;;
+            *)   echo "::error::Linking $name to $repo failed (HTTP $code)"; exit 1 ;;
+          esac

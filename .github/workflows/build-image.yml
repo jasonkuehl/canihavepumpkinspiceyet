@@ -56,6 +56,24 @@ jobs:
             type=ref,event=pr
 
       # SITE_BASE_URL is an optional repo variable; empty means the site's own config is used
+      # Build once for scanning (amd64, not pushed); the build-and-push below reuses its cache
+      - name: Build image for scanning
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          build-args: |
+            BASE_URL=${{ vars.SITE_BASE_URL }}
+          platforms: linux/amd64
+          push: false
+          outputs: type=docker,dest=/tmp/image.tar
+
+      # Hadolint + Trivy (vulnerabilities, secrets) + SBOM; fails before anything is pushed
+      - name: Scan image
+        uses: https://git.yolo.fail/invader/ci-actions/scan-image@v1
+        with:
+          image-tar: /tmp/image.tar
+          dockerfile: Dockerfile
+
       - name: Build and push
         uses: docker/build-push-action@v6
         with:

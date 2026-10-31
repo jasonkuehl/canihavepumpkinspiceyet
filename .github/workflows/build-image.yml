@@ -69,7 +69,7 @@ jobs:
 
       # Hadolint + Trivy (vulnerabilities, secrets) + SBOM; fails before anything is pushed
       - name: Scan image
-        uses: https://git.yolo.fail/invader/ci-actions/scan-image@v1
+        uses: https://git.yolo.fail/invader/ci-actions/scan-image@v1.1
         with:
           image-tar: /tmp/image.tar
           dockerfile: Dockerfile

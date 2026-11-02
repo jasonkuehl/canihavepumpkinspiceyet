@@ -23,18 +23,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: https://git.yolo.fail/actions/checkout@v4
+        uses: https://git.yolo.fail/actions/checkout@v7
 
       # Registry paths must be lowercase; the repo name may not be
       - name: Set image name
         run: echo "IMAGE=${REGISTRY}/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
 
       - name: Set up Docker Buildx
-        uses: https://git.yolo.fail/actions/docker-setup-buildx-action@v3
+        uses: https://git.yolo.fail/actions/docker-setup-buildx-action@v4
 
       - name: Log in to Gitea Container Registry
         if: github.event_name != 'pull_request'
-        uses: https://git.yolo.fail/actions/docker-login-action@v3
+        uses: https://git.yolo.fail/actions/docker-login-action@v4
         with:
           registry: ${{ env.REGISTRY }}
           # Gitea 1.27's registry rejects the job token (it gets no package scope), so log in with a
@@ -44,7 +44,7 @@ jobs:
 
       - name: Extract metadata
         id: meta
-        uses: https://git.yolo.fail/actions/docker-metadata-action@v5
+        uses: https://git.yolo.fail/actions/docker-metadata-action@v6
         with:
           images: ${{ env.IMAGE }}
           tags: |
@@ -58,7 +58,7 @@ jobs:
       # SITE_BASE_URL is an optional repo variable; empty means the site's own config is used
       # Build once for scanning (amd64, not pushed); the build-and-push below reuses its cache
       - name: Build image for scanning
-        uses: https://git.yolo.fail/actions/docker-build-push-action@v6
+        uses: https://git.yolo.fail/actions/docker-build-push-action@v7
         with:
           context: .
           build-args: |
@@ -75,7 +75,7 @@ jobs:
           dockerfile: Dockerfile
 
       - name: Build and push
-        uses: https://git.yolo.fail/actions/docker-build-push-action@v6
+        uses: https://git.yolo.fail/actions/docker-build-push-action@v7
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}

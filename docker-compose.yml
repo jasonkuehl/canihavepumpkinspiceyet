@@ -1,0 +1,19 @@
+# Runs the site in nginx on http://localhost:8083 (set PORT in a .env file to change it).
+#   docker compose up -d --build   build from this checkout and start
+#   docker compose pull && docker compose up -d   use the image CI pushed instead
+services:
+  canihavepumpkinspiceyet:
+    image: git.yolo.fail/invader/canihavepumpkinspiceyet:latest
+    build: .
+    container_name: canihavepumpkinspiceyet
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8083}:80"
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx:uid=101,gid=101
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
